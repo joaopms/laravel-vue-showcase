@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\UserType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -40,5 +41,23 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    public function receptionist(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => UserType::Receptionist,
+            ];
+        });
+    }
+
+    public function medic(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => UserType::Medic,
+            ];
+        });
     }
 }

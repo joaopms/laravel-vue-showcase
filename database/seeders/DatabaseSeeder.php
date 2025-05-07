@@ -2,8 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Animal;
+use App\Models\Appointment;
+use App\Models\Client;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\UserType;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +18,40 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $users = User::factory()
+            ->count(10)
+            ->state(new Sequence(
+                ['type' => UserType::Receptionist],
+                ['type' => UserType::Medic],
+            ))
+            ->create();
+        $receptionists = $users->where('type', UserType::Receptionist);
+        $medics = $users->where('type', UserType::Medic);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $clients = Client::factory()
+            ->count(20)
+            ->create();
+
+        $animals = Animal::factory()
+            ->count(30)
+            ->recycle($clients)
+            ->create();
+
+        // "Just in" appointments
+        Appointment::factory()
+            ->count(20)
+            ->recycle($animals)
+            ->create();
+
+        // Assigned attachments
+        Appointment::factory()
+            ->count(40)
+            ->assigned()
+            ->recycle([$animals, $users])
+            ->state(new Sequence(fn () => [
+                'receptionist_id' => $receptionists->random()->id,
+                'medic_id' => $medics->random()->id,
+            ]))
+            ->create();
     }
 }

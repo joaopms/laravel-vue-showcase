@@ -5,6 +5,7 @@ Based on [Laravel + Vue Starter Kit](https://github.com/laravel/vue-starter-kit)
 ## Instructions
 
 ### Developing with NixOS
+
 This project was developed using NixOS and a development environment was setup.
 It can be activated by running `nix develop` in the project directory.
 
@@ -28,6 +29,9 @@ php artisan key:generate
 
 # Database migrations
 php artisan migrate
+
+# Seed the database
+php artisan seed
 
 # Build the frontend
 npm build
