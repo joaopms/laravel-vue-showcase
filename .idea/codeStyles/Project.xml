@@ -2,11 +2,6 @@
   <code_scheme name="Project" version="173">
     <option name="RIGHT_MARGIN" value="1000" />
     <option name="SOFT_MARGINS" value="80" />
-    <option name="DO_NOT_FORMAT">
-      <list>
-        <fileSet type="globPattern" pattern="{**/*,*}.{js,ts,jsx,tsx,vue,blade.php}" />
-      </list>
-    </option>
     <HTMLCodeStyleSettings>
       <option name="HTML_SPACE_INSIDE_EMPTY_TAG" value="true" />
     </HTMLCodeStyleSettings>
