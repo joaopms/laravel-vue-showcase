@@ -23,6 +23,7 @@ const form = useForm(
         animal: {
             name: '',
             type: '',
+            ageYears: null,
             ageMonths: null,
         },
         appointment: {
@@ -104,11 +105,11 @@ function createAnimalType(item: string) {
                     <p class="mb-2 text-2xl/12">About you</p>
 
                     <!--Client: name -->
-                    <UFormField label="Name" name="client.name" required>
+                    <UFormField label="Name" name="client.name" class="w-full" required>
                         <UInput v-model="form.client.name" placeholder="Your name" class="w-full" />
                     </UFormField>
                     <!--Client: email-->
-                    <UFormField label="Email" name="client.email" description="Used to contact you about your appointment" required>
+                    <UFormField label="Email" name="client.email" description="Used to contact you about your appointment" class="w-full" required>
                         <UInput v-model="form.client.email" type="email" placeholder="Your email" class="w-full" />
                     </UFormField>
 
@@ -118,11 +119,11 @@ function createAnimalType(item: string) {
                     <p class="mb-2 pt-0 text-2xl/12">About your pet</p>
                     <div class="flex flex-col gap-4 md:flex-row">
                         <!-- Pet: name-->
-                        <UFormField label="Name" name="animal.name" required>
+                        <UFormField label="Name" name="animal.name" class="w-full" required>
                             <UInput v-model="form.animal.name" class="w-full" placeholder="Your pet's name" />
                         </UFormField>
                         <!-- Pet: type -->
-                        <UFormField label="Type" name="animal.type" required>
+                        <UFormField label="Type" name="animal.type" class="w-full" required>
                             <UInputMenu
                                 v-model="form.animal.type"
                                 placeholder="Your pet type"
@@ -132,11 +133,25 @@ function createAnimalType(item: string) {
                                 class="w-full"
                             />
                         </UFormField>
-                        <!-- Pet: age -->
-                        <UFormField label="Age" name="animal.ageMonths" hint="in months" required>
-                            <UInput v-model="form.animal.ageMonths" class="w-full" placeholder="Your pet's age (in months)" />
-                        </UFormField>
                     </div>
+
+                    <!-- Pet: age -->
+                    <UFormField label="Age" required>
+                        <div class="flex flex-col gap-2 sm:flex-row">
+                            <UFormField name="animal.ageYears">
+                                <div class="flex w-full gap-2 sm:items-center">
+                                    <UInput v-model="form.animal.ageYears" placeholder="Age in years..." class="w-full" />
+                                    <span class="whitespace-nowrap text-gray-400">year(s) and</span>
+                                </div>
+                            </UFormField>
+                            <UFormField name="animal.ageMonths">
+                                <div class="flex w-full items-center gap-2">
+                                    <UInput v-model="form.animal.ageMonths" placeholder="... and months" class="w-full" />
+                                    <span class="whitespace-nowrap text-gray-400">month(s)</span>
+                                </div>
+                            </UFormField>
+                        </div>
+                    </UFormField>
 
                     <USeparator class="mb-0 py-6" />
 
@@ -145,7 +160,7 @@ function createAnimalType(item: string) {
                     <div class="flex flex-col gap-4 md:flex-row">
                         <div class="space-y-2 md:w-1/3">
                             <!-- Appointment: date + time -->
-                            <UFormField label="Preferred Time" name="appointment.preferredDate" required>
+                            <UFormField label="Preferred Time" name="appointment.preferredDate" class="w-full" required>
                                 <UInput v-model="form.appointment.preferredDate" type="date" class="w-full" />
                             </UFormField>
                             <UFormField name="appointment.preferredTime">

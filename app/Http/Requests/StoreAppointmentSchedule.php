@@ -24,15 +24,16 @@ class StoreAppointmentSchedule extends FormRequest
     public function rules(): array
     {
         return [
-            'client.name' => ['required', 'string', 'between:2,50'],
+            'client.name' => ['required', 'string', 'min:2', 'max:50'],
             'client.email' => ['required', 'email'],
-            'animal.name' => ['required', 'string', 'between:2,50'],
-            'animal.type' => ['required', 'string', 'between:3,20'],
-            'animal.ageMonths' => ['required', 'numeric', 'integer', 'max:1200'],
+            'animal.name' => ['required', 'string', 'min:2', 'max:50'],
+            'animal.type' => ['required', 'string', 'min:3', 'max:20'],
+            'animal.ageYears' => ['required', 'numeric', 'integer', 'max:100'],
+            'animal.ageMonths' => ['required', 'numeric', 'integer', 'max:12'],
             'appointment.preferredDate' => ['required', Rule::date()->todayOrAfter()],
-            'appointment.preferredTime' => ['required', 'array', 'between:1,2'],
+            'appointment.preferredTime' => ['required', 'array', 'min:1', 'max:2'],
             'appointment.preferredTime.*' => ['required', Rule::enum(TimeOfDay::class)->only(TimeOfDay::selectable())],
-            'appointment.symptoms' => ['required', 'string', 'between:10,255'],
+            'appointment.symptoms' => ['required', 'string', 'min:10', 'max:255'],
         ];
     }
 }
