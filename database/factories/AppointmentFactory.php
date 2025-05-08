@@ -28,7 +28,7 @@ class AppointmentFactory extends Factory
         ];
     }
 
-    public function assigned(): Factory
+    public function assigned(): self
     {
         return $this->state(function (array $attributes) {
             return [

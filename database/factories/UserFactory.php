@@ -43,7 +43,7 @@ class UserFactory extends Factory
         ]);
     }
 
-    public function receptionist(): Factory
+    public function receptionist(): self
     {
         return $this->state(function (array $attributes) {
             return [
@@ -52,7 +52,7 @@ class UserFactory extends Factory
         });
     }
 
-    public function medic(): Factory
+    public function medic(): self
     {
         return $this->state(function (array $attributes) {
             return [
