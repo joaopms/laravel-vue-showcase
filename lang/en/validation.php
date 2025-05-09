@@ -30,6 +30,7 @@ return [
     'after_or_equal' => 'Must be a date after or equal to :date',
     'array' => 'Must be an array',
     'enum' => 'Invalid',
+    'distinct' => 'Duplicate value',
 
     /*
     |--------------------------------------------------------------------------

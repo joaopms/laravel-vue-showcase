@@ -74,7 +74,7 @@ function createAnimalType(item: string) {
 </script>
 
 <template>
-    <Head title="New Appointment" />
+    <Head title="Schedule Appointment" />
 
     <UApp>
         <UContainer class="flex h-full flex-col items-center justify-center p-4 sm:p-6">
