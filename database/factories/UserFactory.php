@@ -45,7 +45,7 @@ class UserFactory extends Factory
 
     public function receptionist(): self
     {
-        return $this->state(function (array $attributes) {
+        return $this->state(function () {
             return [
                 'type' => UserType::Receptionist,
             ];
@@ -54,7 +54,7 @@ class UserFactory extends Factory
 
     public function medic(): self
     {
-        return $this->state(function (array $attributes) {
+        return $this->state(function () {
             return [
                 'type' => UserType::Medic,
             ];

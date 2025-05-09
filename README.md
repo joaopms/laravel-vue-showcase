@@ -24,6 +24,9 @@ npm install
 # Create .env file (and ask before overwritting)
 cp -i .env.example .env
 
+# Create the database file used for browser tests (set by DB_DATABASE_NAME in .env.dusk.local)
+touch database/database_dusk.sqlite
+
 # Create app key
 php artisan key:generate
 

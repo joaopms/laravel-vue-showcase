@@ -140,6 +140,7 @@ function createAnimalType(item: string) {
                             <UFormField label="Type" name="animal.type" class="w-full" required>
                                 <UInputMenu
                                     v-model="form.animal.type"
+                                    data-input-field-name="animal.type"
                                     placeholder="Your pet type"
                                     create-item="always"
                                     :items="animalTypes"
@@ -178,12 +179,7 @@ function createAnimalType(item: string) {
                                     <UInput v-model="form.appointment.preferred_date" type="date" class="w-full" />
                                 </UFormField>
                                 <UFormField name="appointment.preferred_time">
-                                    <UCheckboxGroup
-                                        v-model="form.appointment.preferred_time"
-                                        orientation="horizontal"
-                                        name="appointment.preferredTime"
-                                        :items="timeOfDay"
-                                    />
+                                    <UCheckboxGroup v-model="form.appointment.preferred_time" orientation="horizontal" :items="timeOfDay" />
                                 </UFormField>
                             </div>
                             <!-- Appointment: symptoms-->

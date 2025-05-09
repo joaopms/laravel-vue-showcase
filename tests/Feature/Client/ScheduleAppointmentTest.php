@@ -1,27 +1,10 @@
 <?php
 
 use App\Models\Client;
-use App\TimeOfDay;
-use Database\Factories\AnimalFactory;
 use Tests\TestCase;
+use Tests\TestData\AppointmentSchedule;
 
-$VALID_APPOINTMENT = [
-    'client' => [
-        'name' => fake()->name,
-        'email' => fake()->email,
-    ],
-    'animal' => [
-        'name' => fake()->randomElement(AnimalFactory::NAMES),
-        'type' => fake()->randomElement(AnimalFactory::TYPES),
-        'age_years' => fake()->numberBetween(1, 20),
-        'age_months' => fake()->numberBetween(0, 12),
-    ],
-    'appointment' => [
-        'preferred_date' => fake()->dateTimeInInterval(now(), '+30 days')->format('Y-m-d'),
-        'preferred_time' => [fake()->randomElement(TimeOfDay::selectable())->value],
-        'symptoms' => fake()->realText(),
-    ],
-];
+$VALID_APPOINTMENT = AppointmentSchedule::valid();
 
 function scheduleAppointment(TestCase $self, array $data): void
 {
@@ -47,12 +30,7 @@ test('can not empty schedule appointment', function () {
 test('can schedule appointment', function () use ($VALID_APPOINTMENT) {
     $data = $VALID_APPOINTMENT;
 
-    // Try to schedule an appointment
-    $response = $this
-        ->post(route('public.schedule-appointment'), $data);
-
-    // Check for redirect. Since we're using Inertia, it redirects the user to the homepage on success
-    $response->assertRedirect(route('public.home'));
+    scheduleAppointment($this, $data);
 
     // Check if data was saved
     $this->assertDatabaseHas('clients', $data['client']);
@@ -90,11 +68,7 @@ test('new appointment does not recreate existing client and animal', function ()
 
     // Try to schedule an appointment, twice, with the same data
     for ($i = 0; $i < 2; $i++) {
-        $response = $this
-            ->post(route('public.schedule-appointment'), $data);
-
-        // Check for redirect. Since we're using Inertia, it redirects the user to the homepage on success
-        $response->assertRedirect(route('public.home'));
+        scheduleAppointment($this, $data);
     }
 
     // Check if the client was updated

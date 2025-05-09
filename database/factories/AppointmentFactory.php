@@ -30,7 +30,7 @@ class AppointmentFactory extends Factory
 
     public function assigned(): self
     {
-        return $this->state(function (array $attributes) {
+        return $this->state(function () {
             return [
                 'receptionist_id' => User::factory()->receptionist(),
                 'medic_id' => User::factory()->medic(),
