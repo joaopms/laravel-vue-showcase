@@ -3,6 +3,7 @@
 use App\Models\Client;
 use App\TimeOfDay;
 use Database\Factories\AnimalFactory;
+use Tests\TestCase;
 
 $VALID_APPOINTMENT = [
     'client' => [
@@ -21,6 +22,16 @@ $VALID_APPOINTMENT = [
         'symptoms' => fake()->realText(),
     ],
 ];
+
+function scheduleAppointment(TestCase $self, array $data): void
+{
+    // Try to schedule an appointment
+    $response = $self
+        ->post(route('public.schedule-appointment'), $data);
+
+    // Check for redirect. Since we're using Inertia, it redirects the user to the homepage on success
+    $response->assertRedirect(route('public.home'));
+}
 
 test('can not empty schedule appointment', function () {
     $response = $this
@@ -41,7 +52,7 @@ test('can schedule appointment', function () use ($VALID_APPOINTMENT) {
         ->post(route('public.schedule-appointment'), $data);
 
     // Check for redirect. Since we're using Inertia, it redirects the user to the homepage on success
-    $response->assertRedirect(route('public.schedule-appointment'));
+    $response->assertRedirect(route('public.home'));
 
     // Check if data was saved
     $this->assertDatabaseHas('clients', $data['client']);
@@ -67,12 +78,7 @@ test('new appointment updates client name', function () use ($VALID_APPOINTMENT)
     // Ensure it exists
     $this->assertDatabaseHas('clients', $clientData);
 
-    // Try to schedule an appointment
-    $response = $this
-        ->post(route('public.schedule-appointment'), $data);
-
-    // Check for redirect. Since we're using Inertia, it redirects the user to the homepage on success
-    $response->assertRedirect(route('public.schedule-appointment'));
+    scheduleAppointment($this, $data);
 
     // Check if the client was updated
     $this->assertDatabaseHas('clients', $data['client']);
@@ -88,7 +94,7 @@ test('new appointment does not recreate existing client and animal', function ()
             ->post(route('public.schedule-appointment'), $data);
 
         // Check for redirect. Since we're using Inertia, it redirects the user to the homepage on success
-        $response->assertRedirect(route('public.schedule-appointment'));
+        $response->assertRedirect(route('public.home'));
     }
 
     // Check if the client was updated
