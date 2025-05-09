@@ -37,11 +37,19 @@
 
         # Tools
         mailpit
+
+        # Browser testing
+        # Needed because Dusk's provided chromedriver is dynamically linked, thus unsupported in NixOS
+        google-chrome
+        chromedriver
       ];
 
       shellHook = ''
         export COMPOSER_HOME="$PWD/.dev-shell";
          export PATH="$PWD/.dev-shell/vendor/bin:$PATH"
+
+         export CHROME_PATH="$(which google-chrome-stable)"
+         export CHROME_DRIVER_PATH="$(which chromedriver)"
       '';
     };
   };
