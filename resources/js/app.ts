@@ -1,17 +1,19 @@
 import '../css/app.css';
 
+import { appName } from '@/lib/consts';
 import { createInertiaApp } from '@inertiajs/vue3';
+import ui from '@nuxt/ui/vue-plugin';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
-import ui from "@nuxt/ui/vue-plugin"
 import { initializeTheme } from './composables/useAppearance';
 
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
     interface ImportMetaEnv {
         readonly VITE_APP_NAME: string;
+
         [key: string]: string | boolean | undefined;
     }
 
@@ -20,8 +22,6 @@ declare module 'vite/client' {
         readonly glob: <T>(pattern: string) => Record<string, () => Promise<T>>;
     }
 }
-
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import InputError from '@/components/InputError.vue';
-import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import AuthLayout from '@/layouts/AuthLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { LoaderCircle } from 'lucide-vue-next';
+import SingleCardLayout from '@/layouts/SingleCardLayout.vue';
+import { useForm } from '@inertiajs/vue3';
+import { Form } from '@nuxt/ui/runtime/types/form.d.ts';
+import { computed, useTemplateRef } from 'vue';
 
 defineProps<{
     status?: string;
@@ -16,39 +12,55 @@ const form = useForm({
     email: '',
 });
 
-const submit = () => {
-    form.post(route('password.email'));
+const formRef = useTemplateRef<Form<any>>('formRef');
+const formErrors = computed(() => Object.entries(form.errors).map(([name, message]) => ({ name, message })));
+
+function showFormErrors() {
+    formRef.value?.setErrors(formErrors.value);
+}
+
+const submitForm = () => {
+    form.post(route('password.email'), {
+        preserveScroll: true,
+        onFinish() {
+            showFormErrors();
+        },
+        onSuccess() {
+            form.reset();
+        },
+    });
 };
 </script>
 
 <template>
-    <AuthLayout title="Forgot password" description="Enter your email to receive a password reset link">
-        <Head title="Forgot password" />
+    <SingleCardLayout page-title="Forgot password" card-title="Forgot password" card-subtitle="Enter your email to receive a password reset link">
+        <template #card>
+            <UAlert v-if="status" :title="status" color="primary" variant="soft" class="-mt-2 mb-8" />
 
-        <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
-            {{ status }}
-        </div>
+            <UForm ref="formRef" :state="form" @submit="submitForm">
+                <UFormField name="email" label="Email Address" required>
+                    <UInput
+                        id="email"
+                        type="email"
+                        name="email"
+                        autocomplete="off"
+                        v-model="form.email"
+                        autofocus
+                        placeholder="email@example.com"
+                        class="w-full"
+                    />
+                </UFormField>
 
-        <div class="space-y-6">
-            <form @submit.prevent="submit">
-                <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
-                    <Input id="email" type="email" name="email" autocomplete="off" v-model="form.email" autofocus placeholder="email@example.com" />
-                    <InputError :message="form.errors.email" />
-                </div>
-
-                <div class="my-6 flex items-center justify-start">
-                    <Button class="w-full" :disabled="form.processing">
-                        <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
+                <div class="mt-6 flex justify-center">
+                    <UButton type="submit" :loading="form.processing" color="primary" size="lg" icon="i-lucide-paw-print" trailing>
                         Email password reset link
-                    </Button>
+                    </UButton>
                 </div>
-            </form>
+            </UForm>
+        </template>
 
-            <div class="space-x-1 text-center text-sm text-muted-foreground">
-                <span>Or, return to</span>
-                <TextLink :href="route('login')">log in</TextLink>
-            </div>
-        </div>
-    </AuthLayout>
+        <template #footer>
+            <UButton :href="route('login')" variant="ghost" size="sm">Login</UButton>
+        </template>
+    </SingleCardLayout>
 </template>

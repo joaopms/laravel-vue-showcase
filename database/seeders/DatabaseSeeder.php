@@ -10,6 +10,7 @@ use App\Models\User;
 use App\UserType;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -53,5 +54,16 @@ class DatabaseSeeder extends Seeder
                 'medic_id' => $medics->random()->id,
             ]))
             ->create();
+
+        // Demo users
+        $password = Hash::make('password');
+        User::factory()->receptionist()->create([
+            'email' => 'receptionist@vet.clinic',
+            'password' => $password,
+        ]);
+        User::factory()->medic()->create([
+            'email' => 'medic@vet.clinic',
+            'password' => $password,
+        ]);
     }
 }

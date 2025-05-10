@@ -13,7 +13,7 @@ function scheduleAppointment(TestCase $self, array $data): void
         ->post(route('public.schedule-appointment'), $data);
 
     // Check for redirect. Since we're using Inertia, it redirects the user to the homepage on success
-    $response->assertRedirect(route('public.home'));
+    $response->assertRedirect(route('home'));
 }
 
 test('can not empty schedule appointment', function () {

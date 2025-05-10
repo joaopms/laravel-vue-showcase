@@ -41,6 +41,6 @@ class PublicController extends Controller
             $animal->appointments()->create($appSched->getAppointmentData());
         });
 
-        return to_route('public.home');
+        return to_route('home');
     }
 }

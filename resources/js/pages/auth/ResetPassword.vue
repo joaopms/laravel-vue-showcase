@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import AuthLayout from '@/layouts/AuthLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { LoaderCircle } from 'lucide-vue-next';
+import SingleCardLayout from '@/layouts/SingleCardLayout.vue';
+import { useForm } from '@inertiajs/vue3';
+import { Form } from '@nuxt/ui/runtime/types/form';
+import { computed, useTemplateRef } from 'vue';
 
 interface Props {
     token: string;
@@ -17,13 +14,25 @@ const props = defineProps<Props>();
 const form = useForm({
     token: props.token,
     email: props.email,
+
     password: '',
     password_confirmation: '',
 });
 
-const submit = () => {
+const formRef = useTemplateRef<Form<any>>('formRef');
+const formErrors = computed(() => Object.entries(form.errors).map(([name, message]) => ({ name, message })));
+
+function showFormErrors() {
+    formRef.value?.setErrors(formErrors.value);
+}
+
+const submitForm = () => {
     form.post(route('password.store'), {
-        onFinish: () => {
+        preserveScroll: true,
+        onFinish() {
+            showFormErrors();
+        },
+        onSuccess() {
             form.reset('password', 'password_confirmation');
         },
     });
@@ -31,51 +40,45 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthLayout title="Reset password" description="Please enter your new password below">
-        <Head title="Reset password" />
-
-        <form @submit.prevent="submit">
-            <div class="grid gap-6">
-                <div class="grid gap-2">
-                    <Label for="email">Email</Label>
-                    <Input id="email" type="email" name="email" autocomplete="email" v-model="form.email" class="mt-1 block w-full" readonly />
-                    <InputError :message="form.errors.email" class="mt-2" />
-                </div>
-
-                <div class="grid gap-2">
-                    <Label for="password">Password</Label>
-                    <Input
+    <SingleCardLayout page-title="Reset password" card-title="Reset password" card-subtitle="Please enter your new password below">
+        <template #card>
+            <UForm ref="formRef" :state="form" @submit="submitForm" class="space-y-4">
+                <UFormField name="password" label="New Password" required>
+                    <UInput
                         id="password"
                         type="password"
                         name="password"
-                        autocomplete="new-password"
+                        autocomplete="password"
                         v-model="form.password"
-                        class="mt-1 block w-full"
+                        class="w-full"
                         autofocus
-                        placeholder="Password"
+                        placeholder="New password"
                     />
-                    <InputError :message="form.errors.password" />
-                </div>
+                </UFormField>
 
-                <div class="grid gap-2">
-                    <Label for="password_confirmation"> Confirm Password </Label>
-                    <Input
+                <UFormField name="password_confirmation" label="New Password" required>
+                    <UInput
                         id="password_confirmation"
                         type="password"
                         name="password_confirmation"
-                        autocomplete="new-password"
+                        autocomplete="password"
                         v-model="form.password_confirmation"
-                        class="mt-1 block w-full"
-                        placeholder="Confirm password"
+                        class="w-full"
+                        autofocus
+                        placeholder="Confirm new password"
                     />
-                    <InputError :message="form.errors.password_confirmation" />
-                </div>
+                </UFormField>
 
-                <Button type="submit" class="mt-4 w-full" :disabled="form.processing">
-                    <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                    Reset password
-                </Button>
-            </div>
-        </form>
-    </AuthLayout>
+                <div class="mt-6 flex justify-center">
+                    <UButton type="submit" :loading="form.processing" color="primary" size="lg" icon="i-lucide-paw-print" trailing>
+                        Reset password
+                    </UButton>
+                </div>
+            </UForm>
+        </template>
+
+        <template #footer>
+            <UButton :href="route('login')" variant="ghost" size="sm">Login</UButton>
+        </template>
+    </SingleCardLayout>
 </template>

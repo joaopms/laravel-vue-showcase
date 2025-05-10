@@ -5,8 +5,9 @@ use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/', [PublicController::class, 'home'])->name('home');
+
 Route::name('public.')->group(function () {
-    Route::get('/', [PublicController::class, 'home'])->name('home');
     Route::post('/appointment', [PublicController::class, 'scheduleAppointment'])
         ->name('schedule-appointment')
         ->middleware([HandlePrecognitiveRequests::class]);
