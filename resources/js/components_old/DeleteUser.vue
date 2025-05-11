@@ -3,9 +3,9 @@ import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 // Components
-import HeadingSmall from '@/components/HeadingSmall.vue';
-import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
+import HeadingSmall from '@/components_old/HeadingSmall.vue';
+import InputError from '@/components_old/InputError.vue';
+import { Button } from '@/components_old/ui/button';
 import {
     Dialog,
     DialogClose,
@@ -15,9 +15,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/components_old/ui/dialog';
+import { Input } from '@/components_old/ui/input';
+import { Label } from '@/components_old/ui/label';
 
 const passwordInput = ref<HTMLInputElement | null>(null);
 
@@ -72,7 +72,7 @@ const closeModal = () => {
 
                         <DialogFooter class="gap-2">
                             <DialogClose as-child>
-                                <Button variant="secondary" @click="closeModal"> Cancel </Button>
+                                <Button variant="secondary" @click="closeModal"> Cancel</Button>
                             </DialogClose>
 
                             <Button variant="destructive" :disabled="form.processing">

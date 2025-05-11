@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import SingleCardLayout from '@/layouts/SingleCardLayout.vue';
 import { useForm } from '@inertiajs/vue3';
-import { Form } from '@nuxt/ui/runtime/types/form.d.ts';
+import type { Form } from '@nuxt/ui/runtime/types/form.d.ts';
 import { computed, useTemplateRef } from 'vue';
 
 defineProps<{

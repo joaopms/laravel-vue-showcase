@@ -13,9 +13,20 @@ Route::name('public.')->group(function () {
         ->middleware([HandlePrecognitiveRequests::class]);
 });
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::name('dashboard.')
+    ->prefix('dashboard')
+    ->middleware(['auth', 'verified'])
+    ->group(function () {
+        Route::get('/', function () {
+            // Temporary until we have a proper dashboard
+            return to_route('dashboard.appointments');
+            // return Inertia::render('dashboard/Index');
+        })->name('index');
+
+        Route::get('/appointments', function () {
+            return Inertia::render('dashboard/Appointments');
+        })->name('appointments');
+    });
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
