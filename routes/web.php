@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\PublicController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Support\Facades\Route;
@@ -23,9 +24,7 @@ Route::name('dashboard.')
             // return Inertia::render('dashboard/Index');
         })->name('index');
 
-        Route::get('/appointments', function () {
-            return Inertia::render('dashboard/Appointments');
-        })->name('appointments');
+        Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
     });
 
 require __DIR__.'/settings.php';

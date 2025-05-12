@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
+
 enum TimeOfDay: string
 {
     case Morning = 'morning';
@@ -48,5 +50,10 @@ enum TimeOfDay: string
         );
 
         return $times[0];
+    }
+
+    public function format(): string
+    {
+        return Str::headline($this->value);
     }
 }

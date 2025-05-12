@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\TimeOfDay;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Appointment extends Model
 {
@@ -18,6 +21,8 @@ class Appointment extends Model
     ];
 
     protected $casts = [
+        'preferred_date' => 'date',
+        'preferred_time' => TimeOfDay::class,
         'assigned_at' => 'timestamp',
     ];
 
@@ -34,5 +39,29 @@ class Appointment extends Model
     public function medic(): BelongsTo
     {
         return $this->belongsTo(User::class, 'medic_id');
+    }
+
+    public function client(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Client::class,
+            Animal::class,
+            'client_id', // FK on Animal
+            'id', // FK on Client
+        );
+    }
+
+    public function preferredDateFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->preferred_date->format('d/m/Y')
+        );
+    }
+
+    public function preferredTimeFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->preferred_time->format()
+        );
     }
 }

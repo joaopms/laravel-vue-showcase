@@ -10,8 +10,8 @@ defineProps<AppLayoutProps>();
         <DashboardHeader mobile />
         <DashboardHeader />
 
-        <main class="px-4 py-4 sm:px-6">
+        <UContainer as="main" class="py-4 lg:px-6">
             <slot></slot>
-        </main>
+        </UContainer>
     </AppLayout>
 </template>
