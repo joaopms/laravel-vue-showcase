@@ -16,8 +16,7 @@ class PublicController extends Controller
     {
         return Inertia::render('client/ScheduleAppointment', [
             // TODO Cache animal types
-            // TODO Only show approved (aka assigned appointments) animals
-            'animalTypes' => Animal::distinct('type')->orderBy('type')->pluck('type'),
+            'animalTypes' => Animal::types(approved: true),
             'timeOfDay' => TimeOfDay::selectable(),
         ]);
     }

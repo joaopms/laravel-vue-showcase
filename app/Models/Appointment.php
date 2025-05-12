@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\TimeOfDay;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -49,6 +51,12 @@ class Appointment extends Model
             'client_id', // FK on Animal
             'id', // FK on Client
         );
+    }
+
+    #[Scope]
+    protected function assigned(Builder $query): Builder
+    {
+        return $query->whereNotNull('medic_id');
     }
 
     public function preferredDateFormatted(): Attribute

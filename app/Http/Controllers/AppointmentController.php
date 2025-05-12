@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ListAppointmentsRequest;
 use App\Http\Resources\AppointmentResource;
+use App\Models\Animal;
 use App\Models\Appointment;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,24 +14,24 @@ class AppointmentController extends Controller
 {
     public function index(ListAppointmentsRequest $request)
     {
-        $query = Appointment::with([
-            'animal',
-            'animal.client',
-            'medic',
-        ])
-            ->orderBy('preferred_date', 'desc');
+        $appointments = Appointment::with(['animal', 'animal.client', 'medic'])
+            ->orderBy('preferred_date', 'desc')
+            // Date filters
+            ->when($request->start, fn (Builder $query) => $query->where('preferred_date', '>=', $request->start))
+            ->when($request->end, fn (Builder $query) => $query->where('preferred_date', '<=', $request->end))
+            // Animal type filter
+            ->when($request->animalTypes, function (Builder $query) use ($request) {
+                $query->whereHas('animal', fn (Builder $animal) => $animal->whereIn('type', $request->animalTypes));
+            })
+            // -------
+            ->paginate(15);
 
-        if ($request->start) {
-            $query->where('preferred_date', '>=', $request->start);
-        }
-        if ($request->end) {
-            $query->where('preferred_date', '<=', $request->end);
-        }
-
-        $appointments = $query->paginate(15);
+        // TODO Cache animal types
+        $animalTypes = Animal::types(approved: false);
 
         return Inertia::render('dashboard/Appointments', [
             'appointments' => AppointmentResource::collection($appointments),
+            'animalTypes' => $animalTypes,
         ]);
     }
 

@@ -15,8 +15,9 @@ class ListAppointmentsRequest extends FormRequest
     {
         return [
             // Filters
-            'start' => ['date'], // Date
-            'end' => ['date'],   // Date
+            'start' => ['date'],            // Date
+            'end' => ['date'],              // Date
+            'animalTypes' => ['array'],    // Animal types
         ];
     }
 }

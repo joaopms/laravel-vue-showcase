@@ -12,6 +12,7 @@ interface AppointmentsDataManager {
             start: CalendarDate | undefined;
             end: CalendarDate | undefined;
         };
+        animalTypes: string[] | undefined;
     };
     pagination: {
         pageIndex: number;
@@ -42,6 +43,7 @@ const dataManager = ref<AppointmentsDataManager>({
             start: params.start ? parseDate(params.start as string) : undefined,
             end: params.end ? parseDate(params.end as string) : undefined,
         },
+        animalTypes: params?.animalTypes,
     },
     pagination: {
         pageIndex: parseInt(meta.value.current_page),
@@ -58,11 +60,12 @@ watch(
 );
 
 const urlFilters = computed(() => {
-    const preferredDate = dataManager.value.filters.preferredDate;
+    const { preferredDate, animalTypes } = dataManager.value.filters;
 
     return {
         start: preferredDate?.start?.toString(),
         end: preferredDate?.end?.toString(),
+        animalTypes: animalTypes,
     };
 });
 
@@ -95,10 +98,10 @@ function updateData() {
         <UCard>
             <div class="space-y-4">
                 <!-- Filters -->
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-3">
                     <!-- Date filter -->
                     <UPopover>
-                        <UButton variant="subtle" icon="i-lucide-calendar" size="sm">
+                        <UButton variant="soft" icon="i-lucide-calendar" size="sm">
                             <template v-if="datesFilter.start">
                                 {{ formatDate(datesFilter.start) }}
 
@@ -118,6 +121,16 @@ function updateData() {
                             </div>
                         </template>
                     </UPopover>
+
+                    <!-- Animal type list -->
+                    <UInputMenu
+                        v-model="dataManager.filters.animalTypes"
+                        :items="page.props.animalTypes as string[]"
+                        variant="soft"
+                        size="sm"
+                        multiple
+                        placeholder="Select animal types"
+                    />
                 </div>
 
                 <USeparator />
