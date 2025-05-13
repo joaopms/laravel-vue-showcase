@@ -6,6 +6,7 @@ use App\Http\Requests\ListAppointmentsRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Models\Animal;
 use App\Models\Appointment;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -18,7 +19,7 @@ class AppointmentController extends Controller
             ->orderBy('preferred_date', 'desc')
             // Date filters
             ->when($request->start, fn (Builder $query) => $query->where('preferred_date', '>=', $request->start))
-            ->when($request->end, fn (Builder $query) => $query->where('preferred_date', '<=', $request->end))
+            ->when($request->end, fn (Builder $query) => $query->where('preferred_date', '<=', Carbon::parse($request->end)->addDay()))
             // Animal type filter
             ->when($request->animalTypes, function (Builder $query) use ($request) {
                 $query->whereHas('animal', fn (Builder $animal) => $animal->whereIn('type', $request->animalTypes));

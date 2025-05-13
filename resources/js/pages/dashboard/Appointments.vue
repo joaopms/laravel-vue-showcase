@@ -43,7 +43,7 @@ const dataManager = ref<AppointmentsDataManager>({
             start: params.start ? parseDate(params.start as string) : undefined,
             end: params.end ? parseDate(params.end as string) : undefined,
         },
-        animalTypes: params?.animalTypes,
+        animalTypes: params?.animalTypes as string[] | undefined,
     },
     pagination: {
         pageIndex: parseInt(meta.value.current_page),
@@ -77,19 +77,22 @@ function resetFilterPreferredDates() {
 }
 
 function updateData() {
-    router.reload({
-        data: {
+    router.get(
+        location.pathname,
+        {
             page: dataManager.value.pagination.pageIndex,
             ...urlFilters.value,
         },
-        only: ['appointments'],
-        onStart() {
-            loading.value = true;
+        {
+            only: ['appointments'],
+            onStart() {
+                loading.value = true;
+            },
+            onFinish() {
+                loading.value = false;
+            },
         },
-        onFinish() {
-            loading.value = false;
-        },
-    });
+    );
 }
 </script>
 
