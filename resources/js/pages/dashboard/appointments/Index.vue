@@ -13,6 +13,7 @@ interface AppointmentsDataManager {
             end: CalendarDate | undefined;
         };
         animalTypes: string[] | undefined;
+        showAll: boolean | undefined;
     };
     pagination: {
         pageIndex: number;
@@ -45,6 +46,7 @@ const dataManager = ref<AppointmentsDataManager>({
             end: params.end ? parseDate(params.end as string) : undefined,
         },
         animalTypes: params?.animalTypes as string[] | undefined,
+        showAll: 'showAll' in params || undefined,
     },
     pagination: {
         pageIndex: parseInt(meta.value.current_page),
@@ -61,12 +63,13 @@ watch(
 );
 
 const urlFilters = computed(() => {
-    const { preferredDate, animalTypes } = dataManager.value.filters;
+    const { preferredDate, animalTypes, showAll } = dataManager.value.filters;
 
     return {
         start: preferredDate?.start?.toString(),
         end: preferredDate?.end?.toString(),
-        animalTypes: animalTypes,
+        animalTypes,
+        showAll: showAll || undefined,
     };
 });
 
@@ -135,6 +138,9 @@ function updateData() {
                         multiple
                         placeholder="Select animal types"
                     />
+
+                    <!-- Show all appointments -->
+                    <USwitch v-if="page.props._can.chooseShowAll" v-model="dataManager.filters.showAll" label="Show all" />
                 </div>
 
                 <USeparator />

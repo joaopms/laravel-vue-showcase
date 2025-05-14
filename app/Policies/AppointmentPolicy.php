@@ -38,4 +38,12 @@ class AppointmentPolicy
     {
         return $user->isReceptionist();
     }
+
+    /**
+     * Determine whether the user can **choose** to show all assignments
+     */
+    public function chooseShowAll(User $user): bool
+    {
+        return $user->isMedic();
+    }
 }

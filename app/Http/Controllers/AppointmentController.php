@@ -23,6 +23,8 @@ class AppointmentController extends Controller
 {
     public function index(ListAppointmentsRequest $request)
     {
+        $user = $request->user();
+        $chooseShowAll = $user->can('choose-show-all', Appointment::class);
         $appointments = Appointment::with(['animal', 'animal.client', 'medic'])
             ->orderBy('preferred_date', 'desc')
             // Date filters
@@ -32,6 +34,11 @@ class AppointmentController extends Controller
             ->when($request->animalTypes, function (Builder $query) use ($request) {
                 $query->whereHas('animal', fn (Builder $animal) => $animal->whereIn('type', $request->animalTypes));
             })
+            // Show all filter (defaults to false for medics)
+            ->when(
+                $chooseShowAll && ! $request->showAll,
+                fn (Builder $query) => $query->where('medic_id', $user->id)
+            )
             // -------
             ->paginate(15);
 
@@ -41,6 +48,7 @@ class AppointmentController extends Controller
         return Inertia::render('dashboard/appointments/Index', [
             'appointments' => new AppointmentCollection($appointments)->listing(),
             'animalTypes' => $animalTypes,
+            '_can' => ['chooseShowAll' => $chooseShowAll],
         ]);
     }
 

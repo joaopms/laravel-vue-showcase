@@ -17,7 +17,8 @@ class ListAppointmentsRequest extends FormRequest
             // Filters
             'start' => ['date'],            // Date
             'end' => ['date'],              // Date
-            'animalTypes' => ['array'],    // Animal types
+            'animalTypes' => ['array'],     // Animal types
+            'showAll' => [],                // Show all appointments
         ];
     }
 }
