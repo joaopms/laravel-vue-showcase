@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Client;
+use App\TimeOfDay;
+use Carbon\Carbon;
 use Tests\TestCase;
 use Tests\TestData\AppointmentSchedule;
 
@@ -40,6 +42,8 @@ test('can schedule appointment', function () use ($VALID_APPOINTMENT) {
     );
     $this->assertDatabaseHas('appointments', [
         ...$data['appointment'],
+        'preferred_date' => Carbon::parse($data['appointment']['preferred_date']),
+        'preferred_time' => TimeOfDay::allDayOrOneTime(Arr::map($data['appointment']['preferred_time'], fn (string $timeOfDay) => TimeOfDay::from($timeOfDay)))->value,
         'animal_age_months' => ($data['animal']['age_years'] * 12) + $data['animal']['age_months'],
     ]);
 });
