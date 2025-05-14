@@ -21,6 +21,8 @@ class Appointment extends Model
         'preferred_date',
         'preferred_time',
         'animal_age_months',
+        'medic_id',
+        'receptionist_id',
     ];
 
     protected $dateFormat = 'Y-m-d';

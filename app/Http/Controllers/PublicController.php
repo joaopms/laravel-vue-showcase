@@ -30,7 +30,7 @@ class PublicController extends Controller
             // Create or update the client name if the email matches an existing one
             $client = Client::updateOrCreate(
                 ['email' => $appSched['client.email']],
-                $appSched['client']
+                $appSched->safe()['client']
             );
 
             // Get or create the animal

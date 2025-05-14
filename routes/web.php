@@ -9,8 +9,8 @@ Route::get('/', [PublicController::class, 'home'])->name('home');
 
 Route::name('public')->group(function () {
     Route::post('/appointment', [PublicController::class, 'scheduleAppointment'])
-        ->middleware([HandlePrecognitiveRequests::class])
-        ->name('.schedule-appointment');
+        ->name('.schedule-appointment')
+        ->middleware([HandlePrecognitiveRequests::class]);
 });
 
 Route::name('dashboard')
@@ -25,7 +25,9 @@ Route::name('dashboard')
 
         Route::get('/appointments', [AppointmentController::class, 'index'])->name('.appointments.index');
         Route::get('/appointments/{appointment}', [AppointmentController::class, 'show'])->name('.appointments.show');
-        Route::patch('/appointments/{appointment}', [AppointmentController::class, 'edit'])->name('.appointments.edit');
+        Route::put('/appointments/{appointment}', [AppointmentController::class, 'update'])
+            ->name('.appointments.update')
+            ->middleware([HandlePrecognitiveRequests::class]);
     });
 
 require __DIR__.'/settings.php';

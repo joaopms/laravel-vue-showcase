@@ -158,10 +158,10 @@ function updateData() {
                         </div>
                     </template>
                     <template #status-cell="{ row }">
-                        <UBadge :color="row.original.medic ? 'success' : 'warning'">
-                            {{ row.original.medic ? 'Assigned' : 'To be assigned' }}
+                        <UBadge :color="row.original.medic.name ? 'success' : 'warning'">
+                            {{ row.original.medic.name ? 'Assigned' : 'To be assigned' }}
                         </UBadge>
-                        <div v-if="row.original.medic" class="mt-1">
+                        <div v-if="row.original.medic.name" class="mt-1">
                             {{ row.original.medic.name }}
                         </div>
                     </template>

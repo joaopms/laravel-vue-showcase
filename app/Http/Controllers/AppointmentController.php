@@ -3,16 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ListAppointmentsRequest;
+use App\Http\Requests\StoreAppointmentSchedule;
 use App\Http\Resources\AppointmentCollection;
 use App\Http\Resources\AppointmentResource;
+use App\Http\Resources\UserResource;
 use App\Models\Animal;
 use App\Models\Appointment;
+use App\Models\Client;
+use App\Models\User;
 use App\TimeOfDay;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Throwable;
 
 class AppointmentController extends Controller
 {
@@ -42,22 +46,48 @@ class AppointmentController extends Controller
     public function show(Appointment $appointment)
     {
         $appointment = $appointment->load(['animal', 'animal.client']);
+        $medics = User::medic()->get();
 
         return Inertia::render('dashboard/appointments/Appointment', [
             'appointment' => new AppointmentResource($appointment)->showing(),
             'animalTypes' => Animal::types(approved: false),
             'timesOfDay' => TimeOfDay::selectable(),
+            'medics' => UserResource::collection($medics),
         ]);
     }
 
-    public function edit(Appointment $appointment)
+    /**
+     * @throws Throwable
+     */
+    public function update(StoreAppointmentSchedule $request, Appointment $appointment)
     {
-        Gate::authorize('update', $appointment);
-    }
+        DB::transaction(function () use ($request, $appointment) {
+            // Update the client
+            $client = Client::updateOrCreate(
+                ['email' => $request['client.email']],
+                $request->safe()['client'],
+            );
 
-    public function update(Request $request, Appointment $appointment)
-    {
-        //
+            // Update the animal
+            $appointment->animal()->update([
+                ...$request->getAnimalData(),
+                // If the client ID has changed, update the animal
+                'client_id' => $client->id,
+            ]);
+
+            // Update the appointment
+            $appointment->update([
+                ...$request->getAppointmentData(),
+                'medic_id' => $request['medic.id'],
+                'receptionist_id' => $request->user()->id,
+            ]);
+        });
+
+        // TODO Notify user
+
+        $request->session()->flash('success', 'Appointment was successfully edited');
+
+        return to_route('dashboard.appointments.index');
     }
 
     public function destroy(Appointment $appointment)

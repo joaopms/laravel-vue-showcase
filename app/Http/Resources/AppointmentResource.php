@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use App\Models\Appointment;
-use App\Models\User;
 use App\ResourceConditions;
 use App\TimeOfDay;
 use Illuminate\Http\Request;
@@ -33,17 +32,18 @@ class AppointmentResource extends JsonResource
             'animal' => [
                 'name' => $this->animal->name,
                 'type' => $this->animal->type,
-                'age_human' => $this->animal_age->human(),
-                'age_years' => $this->animal_age->years(),
-                'age_months' => $this->animal_age->months(),
+                'age_human' => $this->when($this->listing, $this->animal_age->human()),
+                'age_years' => $this->when($this->showing, $this->animal_age->years()),
+                'age_months' => $this->when($this->showing, $this->animal_age->months()),
             ],
             'client' => [
                 'name' => $this->animal->client->name,
                 'email' => $this->when($this->showing, $this->animal->client->email),
             ],
-            'medic' => $this->whenLoaded('medic', fn (User $medic) => [
-                'name' => $medic->name,
-            ]),
+            'medic' => [
+                'id' => $this->when($this->showing, $this->medic?->id),
+                'name' => $this->when($this->listing, $this->medic?->name),
+            ],
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Helpers\AgeParser;
 use App\TimeOfDay;
+use App\UserType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -35,22 +36,24 @@ class StoreAppointmentSchedule extends FormRequest
             'appointment.preferred_time' => ['required', 'array', 'min:1', 'max:2'],
             'appointment.preferred_time.*' => ['required', Rule::enum(TimeOfDay::class)->only(TimeOfDay::selectable()), 'distinct'],
             'appointment.symptoms' => ['required', 'string', 'min:10', 'max:255'],
+
+            // Employee only fields
+            'medic.id' => auth()->check()
+                ? ['nullable', Rule::exists('users', 'id')->where('type', UserType::Medic)]
+                : [],
         ];
     }
 
     public function getAnimalData(): array
     {
-        return $this->collect('animal')
+        return collect($this->safe()['animal'])
             ->except(['age_years', 'age_months'])
             ->toArray();
     }
 
     public function getAnimalAgeInMonths(): int
     {
-        return AgeParser::from(
-            $this['animal.age_years'],
-            $this['animal.age_months']
-        )->asMonths();
+        return AgeParser::from($this['animal.age_years'], $this['animal.age_months'])->asMonths();
     }
 
     /**
@@ -66,7 +69,7 @@ class StoreAppointmentSchedule extends FormRequest
     public function getAppointmentData(): array
     {
         return [
-            ...$this['appointment'],
+            ...$this->safe()['appointment'],
             'preferred_time' => $this->getAppointmentTimes(),
             'animal_age_months' => $this->getAnimalAgeInMonths(),
         ];

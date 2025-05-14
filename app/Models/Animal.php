@@ -16,6 +16,7 @@ class Animal extends Model
     protected $fillable = [
         'name',
         'type',
+        'client_id',
     ];
 
     public function client(): BelongsTo

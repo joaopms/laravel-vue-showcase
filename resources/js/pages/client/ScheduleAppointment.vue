@@ -21,6 +21,10 @@ const submitted = ref(false);
                     :url="route('public.schedule-appointment')"
                     :animal-types="$page.props.animalTypes"
                     :times-of-day="$page.props.timesOfDay"
+                    client-section-title="About you"
+                    animal-section-title="About your pet"
+                    appointment-section-title="About your visit"
+                    submit-text="Schedule appointment"
                     @submit="() => (submitted = true)"
                 />
             </div>

@@ -20,6 +20,8 @@ interface AppointmentFormData {
         preferred_time: string[];
         symptoms: string;
     };
+
+    [key: string]: any;
 }
 
 const defaultFormData: AppointmentFormData = {
@@ -46,6 +48,11 @@ interface AppointmentFormProps {
     animalTypes: string[];
     timesOfDay: string[];
     initialData?: AppointmentFormData;
+    clientSectionTitle: string;
+    animalSectionTitle: string;
+    appointmentSectionTitle: string;
+    extraSectionTitle?: string;
+    submitText: string;
 }
 
 const props = defineProps<AppointmentFormProps>();
@@ -121,21 +128,21 @@ function createAnimalType(item: string) {
         class="space-y-4"
     >
         <!-- Client -->
-        <p class="mb-2 text-2xl/12">About you</p>
+        <p class="mb-2 text-2xl/12">{{ clientSectionTitle }}</p>
 
         <!--Client: name -->
         <UFormField label="Name" name="client.name" class="w-full" required>
             <UInput v-model="form.client.name" placeholder="Your name" class="w-full" />
         </UFormField>
         <!--Client: email-->
-        <UFormField label="Email" name="client.email" description="Used to contact you about your appointment" class="w-full" required>
+        <UFormField label="Email" name="client.email" description="Used to contact about the appointment" class="w-full" required>
             <UInput v-model="form.client.email" type="email" placeholder="Your email" class="w-full" />
         </UFormField>
 
         <USeparator class="mb-0 py-6" />
 
         <!-- Pet -->
-        <p class="mb-2 pt-0 text-2xl/12">About your pet</p>
+        <p class="mb-2 pt-0 text-2xl/12">{{ animalSectionTitle }}</p>
         <div class="flex flex-col gap-4 md:flex-row">
             <!-- Pet: name-->
             <UFormField label="Name" name="animal.name" class="w-full" required>
@@ -176,7 +183,7 @@ function createAnimalType(item: string) {
         <USeparator class="mb-0 py-6" />
 
         <!-- Appointment -->
-        <p class="mb-2 pt-0 text-2xl/12">About your visit</p>
+        <p class="mb-2 pt-0 text-2xl/12">{{ appointmentSectionTitle }}</p>
         <div class="flex flex-col gap-4 md:flex-row">
             <div class="space-y-2 md:w-1/3">
                 <!-- Appointment: date + time -->
@@ -193,10 +200,16 @@ function createAnimalType(item: string) {
             </UFormField>
         </div>
 
+        <!-- Extra fields -->
+        <p class="mb-2 pt-0 text-2xl/12" v-if="extraSectionTitle">{{ extraSectionTitle }}</p>
+        <div class="flex flex-col gap-4 md:flex-row" v-if="$slots.extra">
+            <slot name="extra" v-bind="{ form }"></slot>
+        </div>
+
         <!-- Form: controls -->
         <div class="mt-12 flex justify-center">
             <UButton type="submit" :disabled="form.hasErrors" :loading="form.processing" color="primary" size="lg" icon="i-lucide-paw-print" trailing>
-                Schedule appointment
+                {{ submitText }}
             </UButton>
         </div>
     </UForm>

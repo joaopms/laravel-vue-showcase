@@ -31,6 +31,7 @@ return [
     'array' => 'Must be an array',
     'enum' => 'Invalid',
     'distinct' => 'Duplicate value',
+    'exists' => 'Invalid',
 
     /*
     |--------------------------------------------------------------------------
