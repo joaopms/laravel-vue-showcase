@@ -19,12 +19,12 @@ const items = <NavigationMenuItem[][]>[
         // {
         //     label: 'Dashboard',
         //     icon: 'i-lucide-house',
-        //     href: route('dashboard.index'),
+        //     href: route('dashboard'),
         // },
         {
             label: 'Appointments',
             icon: 'i-lucide-clipboard-list',
-            href: route('dashboard.appointments'),
+            href: route('dashboard.appointments.index'),
         },
     ],
     [
@@ -52,7 +52,7 @@ function highlightActiveRoute(items: NavigationMenuItem[]) {
 
 <template>
     <header class="items-center gap-2 border-b-1" :class="mobile ? ['flex flex-col px-2 py-2 sm:hidden'] : ['hidden px-4 sm:flex']">
-        <ULink raw :href="route('dashboard.index')" class="text-lg font-bold text-nowrap" :class="mobile ? ['pb-2'] : ['border-r-1 pr-4 pl-2']">
+        <ULink raw :href="route('dashboard')" class="text-lg font-bold text-nowrap" :class="mobile ? ['pb-2'] : ['border-r-1 pr-4 pl-2']">
             {{ appName }}
         </ULink>
 

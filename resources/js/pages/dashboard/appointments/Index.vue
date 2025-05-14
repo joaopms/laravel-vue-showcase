@@ -21,11 +21,12 @@ interface AppointmentsDataManager {
 
 const columns = [
     { accessorKey: 'client.name', header: 'Client' },
-    { accessorKey: 'animal.name', header: 'Pet Name' },
-    { accessorKey: 'animal.type', header: 'Pet Type' },
+    { id: 'animal', header: 'Animal' },
+    { accessorKey: 'symptoms', header: 'Symptoms' },
     { accessorKey: 'preferred_date', header: 'Date' },
     { accessorKey: 'preferred_time', header: 'Availability' },
     { id: 'status', header: 'Status' },
+    { id: 'actions' },
 ];
 
 const loading = ref(false);
@@ -140,10 +141,37 @@ function updateData() {
 
                 <!-- Data -->
                 <UTable :columns="columns" :data="data" :loading="loading" class="w-full">
+                    <template #animal-cell="{ row }">
+                        <div class="font-bold">
+                            {{ row.original.animal.name }}
+                        </div a>
+                        <div class="text-xs">
+                            {{ row.original.animal.type }}
+                        </div>
+                        <div class="text-xs">
+                            {{ row.original.animal.age.human }}
+                        </div>
+                    </template>
+                    <template #symptoms-cell="{ row }">
+                        <div class="max-w-64 min-w-42 text-xs whitespace-normal">
+                            {{ row.original.symptoms }}
+                        </div>
+                    </template>
                     <template #status-cell="{ row }">
                         <UBadge :color="row.original.medic ? 'success' : 'warning'">
-                            {{ row.original.medic ? 'Assigned to ' + row.original.medic.name : 'To assign' }}
+                            {{ row.original.medic ? 'Assigned' : 'To be assigned' }}
                         </UBadge>
+                        <div v-if="row.original.medic" class="mt-1">
+                            {{ row.original.medic.name }}
+                        </div>
+                    </template>
+                    <template #actions-cell="{ row }">
+                        <UButton
+                            :href="route('dashboard.appointments.show', { appointment: row.original.id })"
+                            icon="lucide-edit"
+                            variant="ghost"
+                            size="sm"
+                        />
                     </template>
                 </UTable>
 

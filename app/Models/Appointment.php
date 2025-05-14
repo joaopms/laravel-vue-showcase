@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\AgeParser;
 use App\TimeOfDay;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
@@ -70,6 +71,13 @@ class Appointment extends Model
     {
         return Attribute::make(
             get: fn () => $this->preferred_time->format()
+        );
+    }
+
+    public function animalAgeFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => new AgeParser($this->animal_age_months)
         );
     }
 }

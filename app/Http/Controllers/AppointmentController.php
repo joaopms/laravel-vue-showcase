@@ -6,9 +6,11 @@ use App\Http\Requests\ListAppointmentsRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Models\Animal;
 use App\Models\Appointment;
+use App\TimeOfDay;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class AppointmentController extends Controller
@@ -30,30 +32,26 @@ class AppointmentController extends Controller
         // TODO Cache animal types
         $animalTypes = Animal::types(approved: false);
 
-        return Inertia::render('dashboard/Appointments', [
+        return Inertia::render('dashboard/appointments/Index', [
             'appointments' => AppointmentResource::collection($appointments),
             'animalTypes' => $animalTypes,
         ]);
     }
 
-    public function create()
-    {
-        //
-    }
-
-    public function store(Request $request)
-    {
-        //
-    }
-
     public function show(Appointment $appointment)
     {
-        //
+        $appointment = $appointment->load(['animal', 'animal.client']);
+
+        return Inertia::render('dashboard/appointments/Appointment', [
+            'appointment' => $appointment,
+            'animalTypes' => Animal::types(approved: false),
+            'timesOfDay' => TimeOfDay::selectable(),
+        ]);
     }
 
     public function edit(Appointment $appointment)
     {
-        //
+        Gate::authorize('update', $appointment);
     }
 
     public function update(Request $request, Appointment $appointment)

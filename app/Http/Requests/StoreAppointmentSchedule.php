@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\AgeParser;
 use App\TimeOfDay;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -47,8 +48,10 @@ class StoreAppointmentSchedule extends FormRequest
 
     public function getAnimalAgeInMonths(): int
     {
-        return ($this['animal.age_years'] * 12)
-            + $this['animal.age_months'];
+        return AgeParser::from(
+            $this['animal.age_years'],
+            $this['animal.age_months']
+        )->asMonths();
     }
 
     /**

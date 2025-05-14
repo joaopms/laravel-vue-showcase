@@ -17,7 +17,7 @@ class PublicController extends Controller
         return Inertia::render('client/ScheduleAppointment', [
             // TODO Cache animal types
             'animalTypes' => Animal::types(approved: true),
-            'timeOfDay' => TimeOfDay::selectable(),
+            'timesOfDay' => TimeOfDay::selectable(),
         ]);
     }
 

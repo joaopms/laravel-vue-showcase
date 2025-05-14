@@ -43,4 +43,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Appointment::class, 'receptionist_id');
     }
+
+    public function isReceptionist(): bool
+    {
+        return $this->type === UserType::Receptionist;
+    }
+
+    public function isMedic(): bool
+    {
+        return $this->type === UserType::Medic;
+    }
 }
