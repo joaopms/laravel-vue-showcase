@@ -144,7 +144,7 @@ function updateData() {
                     <template #animal-cell="{ row }">
                         <div class="font-bold">
                             {{ row.original.animal.name }}
-                        </div a>
+                        </div>
                         <div class="text-xs">
                             {{ row.original.animal.type }}
                         </div>

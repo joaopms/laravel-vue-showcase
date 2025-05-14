@@ -3,9 +3,11 @@ import InputError from '@/components_old/InputError.vue';
 import { Button } from '@/components_old/ui/button';
 import { Input } from '@/components_old/ui/input';
 import { Label } from '@/components_old/ui/label';
-import AuthLayout from '@/layouts/AuthLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import SingleCardLayout from '@/layouts/SingleCardLayout.vue';
+import { useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+
+// TODO Update to match the new layout and components
 
 const form = useForm({
     password: '',
@@ -21,9 +23,11 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthLayout title="Confirm your password" description="This is a secure area of the application. Please confirm your password before continuing.">
-        <Head title="Confirm password" />
-
+    <SingleCardLayout
+        page-title="Confirm password"
+        card-title="Confirm your password"
+        card-subtitle="This is a secure area of the application. Please confirm your password before continuing."
+    >
         <form @submit.prevent="submit">
             <div class="space-y-6">
                 <div class="grid gap-2">
@@ -49,5 +53,5 @@ const submit = () => {
                 </div>
             </div>
         </form>
-    </AuthLayout>
+    </SingleCardLayout>
 </template>
