@@ -31,7 +31,8 @@ const items = <NavigationMenuItem[][]>[
         {
             label: page.props.auth.user.name,
             icon: 'i-lucide-user',
-            href: route('profile.edit'),
+            disabled: true,
+            // href: route('profile.edit'),
         },
         {
             label: 'Logout',

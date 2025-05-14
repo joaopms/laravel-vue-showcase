@@ -45,7 +45,7 @@ function deleteAppointment() {
             >
                 <template #extra="{ form }" v-if="data._can.delete && data._can.assign">
                     <!-- Medic -->
-                    <UFormField v-if="data._can_assign" label="Type" name="medic.id" class="w-full sm:w-1/2">
+                    <UFormField v-if="data._can.assign" label="Type" name="medic.id" class="w-full sm:w-1/2">
                         <div class="flex items-center gap-2">
                             <UInputMenu
                                 v-model="form.medic.id"

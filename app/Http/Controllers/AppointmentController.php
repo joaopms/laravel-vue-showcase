@@ -11,6 +11,7 @@ use App\Models\Animal;
 use App\Models\Appointment;
 use App\Models\Client;
 use App\Models\User;
+use App\Notifications\AppointmentAssigned;
 use App\TimeOfDay;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -70,6 +71,7 @@ class AppointmentController extends Controller
      */
     public function update(StoreAppointmentSchedule $request, Appointment $appointment)
     {
+        $previouslyAssigned = (bool) $appointment->assigned_at;
         DB::transaction(function () use ($request, $appointment) {
             // Update the client
             $data = $request->safe();
@@ -97,7 +99,11 @@ class AppointmentController extends Controller
             ]);
         });
 
-        // TODO Notify user
+        // Notify user
+        $firstAssign = $appointment->assigned_at && ! $previouslyAssigned;
+        if ($firstAssign) {
+            $appointment->client->notify(new AppointmentAssigned($appointment));
+        }
 
         $request->session()->flash('success', 'Appointment was successfully edited');
 

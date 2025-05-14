@@ -33,6 +33,15 @@ class Appointment extends Model
         'assigned_at' => 'timestamp',
     ];
 
+    protected static function booted(): void
+    {
+        static::saving(function (Appointment $model) {
+            if ($model->isDirty('medic_id')) {
+                $model->assigned_at = now();
+            }
+        });
+    }
+
     public function animal(): BelongsTo
     {
         return $this->belongsTo(Animal::class);
