@@ -4,11 +4,48 @@ import type { RequestMethod } from 'laravel-precognition';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { capitalize, computed, ref, useTemplateRef } from 'vue';
 
+interface AppointmentFormData {
+    client: {
+        name: string;
+        email: string;
+    };
+    animal: {
+        name: string;
+        type: string;
+        age_years: number | null;
+        age_months: number | null;
+    };
+    appointment: {
+        preferred_date: string;
+        preferred_time: string[];
+        symptoms: string;
+    };
+}
+
+const defaultFormData: AppointmentFormData = {
+    client: {
+        name: '',
+        email: '',
+    },
+    animal: {
+        name: '',
+        type: '',
+        age_years: null,
+        age_months: null,
+    },
+    appointment: {
+        preferred_date: '',
+        preferred_time: [],
+        symptoms: '',
+    },
+};
+
 interface AppointmentFormProps {
     url: string;
     method: RequestMethod;
     animalTypes: string[];
     timesOfDay: string[];
+    initialData?: AppointmentFormData;
 }
 
 const props = defineProps<AppointmentFormProps>();
@@ -24,21 +61,8 @@ const form = useForm(
     props.method,
     props.url,
     {
-        client: {
-            name: '',
-            email: '',
-        },
-        animal: {
-            name: '',
-            type: '',
-            age_years: null,
-            age_months: null,
-        },
-        appointment: {
-            preferred_date: '',
-            preferred_time: [],
-            symptoms: '',
-        },
+        ...defaultFormData,
+        ...props.initialData,
     },
     {
         onFinish() {

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 enum TimeOfDay: string
@@ -17,10 +18,17 @@ enum TimeOfDay: string
      */
     public static function selectable(): array
     {
-        return [
-            self::Morning,
-            self::Afternoon,
-        ];
+        return [self::Morning, self::Afternoon];
+    }
+
+    /**
+     * Same as `selectable()` but returns an array of strings
+     *
+     * @return string[]
+     */
+    public static function selectableStrings(): array
+    {
+        return Arr::map(self::selectable(), fn (TimeOfDay $time) => $time->value);
     }
 
     /**
@@ -30,7 +38,13 @@ enum TimeOfDay: string
      */
     public static function isAllDay(array $times): bool
     {
-        return self::selectable() == $times;
+        $selectable = array_map(fn (TimeOfDay $time) => $time->value, self::selectable());
+        $given = array_map(fn (TimeOfDay $time) => $time->value, $times);
+
+        sort($selectable);
+        sort($given);
+
+        return $selectable == $given;
     }
 
     /**
@@ -38,7 +52,7 @@ enum TimeOfDay: string
      *
      * @param  TimeOfDay[]  $times
      */
-    public static function allDayOrOneTime(array $times): TimeOfDay
+    private static function allDayOrOneTime(array $times): TimeOfDay
     {
         if (self::isAllDay($times)) {
             return self::AllDay;
@@ -46,7 +60,7 @@ enum TimeOfDay: string
 
         assert(
             count($times) == 1,
-            'Got times of day and it was not considered as AllDay'
+            'Got times of day and it was not considered as AllDay. Did you pass an array of TimeOfDay?'
         );
 
         return $times[0];
@@ -55,5 +69,24 @@ enum TimeOfDay: string
     public function format(): string
     {
         return Str::headline($this->value);
+    }
+
+    /**
+     * @param  string[]  $values
+     */
+    public static function fromInputData(array $values): TimeOfDay
+    {
+        $converted = array_map(fn (string $value) => TimeOfDay::from($value), $values);
+
+        return TimeOfDay::allDayOrOneTime($converted);
+    }
+
+    public static function toInputData(TimeOfDay $value): array
+    {
+        if ($value == TimeOfDay::AllDay) {
+            return TimeOfDay::selectable();
+        }
+
+        return [$value];
     }
 }

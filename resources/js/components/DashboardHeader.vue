@@ -46,7 +46,7 @@ const itemsWithHighlight = items.map(highlightActiveRoute);
 
 // Nuxt UI's `active` is currently broken with Inertia + ziggy, we're highlighting the current item manually
 function highlightActiveRoute(items: NavigationMenuItem[]) {
-    return items.map((item) => ({ ...item, active: currentUrl.value === item.href }));
+    return items.map((item) => ({ ...item, active: currentUrl.value.startsWith(item.href) }));
 }
 </script>
 

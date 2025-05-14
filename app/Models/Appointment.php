@@ -23,8 +23,10 @@ class Appointment extends Model
         'animal_age_months',
     ];
 
+    protected $dateFormat = 'Y-m-d';
+
     protected $casts = [
-        'preferred_date' => 'date',
+        'preferred_date' => 'date:Y-m-d',
         'preferred_time' => TimeOfDay::class,
         'assigned_at' => 'timestamp',
     ];
@@ -74,7 +76,7 @@ class Appointment extends Model
         );
     }
 
-    public function animalAgeFormatted(): Attribute
+    public function animalAge(): Attribute
     {
         return Attribute::make(
             get: fn () => new AgeParser($this->animal_age_months)

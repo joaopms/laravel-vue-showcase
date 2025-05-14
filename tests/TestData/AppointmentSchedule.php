@@ -4,7 +4,6 @@ namespace Tests\TestData;
 
 use App\TimeOfDay;
 use Database\Factories\AnimalFactory;
-use Illuminate\Support\Arr;
 use Tests\TestCase;
 
 class AppointmentSchedule
@@ -24,10 +23,7 @@ class AppointmentSchedule
             ],
             'appointment' => [
                 'preferred_date' => fake()->dateTimeInInterval(now(), '+30 days')->format(TestCase::DATE_FORMAT),
-                'preferred_time' => fake()->randomElements(
-                    Arr::map(TimeOfDay::selectable(), fn (TimeOfDay $timeOfDay) => $timeOfDay->value),
-                    fake()->numberBetween(1, 2)
-                ),
+                'preferred_time' => fake()->randomElements(TimeOfDay::selectableStrings(), fake()->numberBetween(1, 2)),
                 'symptoms' => fake()->realText(),
             ],
         ];

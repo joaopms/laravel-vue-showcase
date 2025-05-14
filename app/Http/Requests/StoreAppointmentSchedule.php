@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use App\Helpers\AgeParser;
 use App\TimeOfDay;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 
 class StoreAppointmentSchedule extends FormRequest
@@ -55,25 +54,20 @@ class StoreAppointmentSchedule extends FormRequest
     }
 
     /**
-     * Casts preferred times from string to TimeOfDay enum and returns them
+     * Casts preferred times from string to TimeOfDay enum
      *
      * This is necessary because they are sent as strings from the frontend
-     *
-     * @return TimeOfDay[]
      */
-    public function getAppointmentTimes(): array
+    public function getAppointmentTimes(): TimeOfDay
     {
-        return Arr::map(
-            $this['appointment.preferred_time'],
-            fn (string $time) => TimeOfDay::from($time)
-        );
+        return TimeOfDay::fromInputData($this['appointment.preferred_time']);
     }
 
     public function getAppointmentData(): array
     {
         return [
             ...$this['appointment'],
-            'preferred_time' => TimeOfDay::allDayOrOneTime($this->getAppointmentTimes()),
+            'preferred_time' => $this->getAppointmentTimes(),
             'animal_age_months' => $this->getAnimalAgeInMonths(),
         ];
     }

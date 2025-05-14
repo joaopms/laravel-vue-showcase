@@ -22,9 +22,9 @@ interface AppointmentsDataManager {
 const columns = [
     { accessorKey: 'client.name', header: 'Client' },
     { id: 'animal', header: 'Animal' },
-    { accessorKey: 'symptoms', header: 'Symptoms' },
-    { accessorKey: 'preferred_date', header: 'Date' },
-    { accessorKey: 'preferred_time', header: 'Availability' },
+    { id: 'symptoms', header: 'Symptoms' },
+    { accessorKey: 'appointment.preferred_date_formatted', header: 'Date' },
+    { accessorKey: 'appointment.preferred_time_formatted', header: 'Availability' },
     { id: 'status', header: 'Status' },
     { id: 'actions' },
 ];
@@ -149,12 +149,12 @@ function updateData() {
                             {{ row.original.animal.type }}
                         </div>
                         <div class="text-xs">
-                            {{ row.original.animal.age.human }}
+                            {{ row.original.animal.age_human }}
                         </div>
                     </template>
                     <template #symptoms-cell="{ row }">
                         <div class="max-w-64 min-w-42 text-xs whitespace-normal">
-                            {{ row.original.symptoms }}
+                            {{ row.original.appointment.symptoms }}
                         </div>
                     </template>
                     <template #status-cell="{ row }">
@@ -167,7 +167,8 @@ function updateData() {
                     </template>
                     <template #actions-cell="{ row }">
                         <UButton
-                            :href="route('dashboard.appointments.show', { appointment: row.original.id })"
+                            title="Edit appointment"
+                            :href="route('dashboard.appointments.show', { appointment: row.original.appointment.id })"
                             icon="lucide-edit"
                             variant="ghost"
                             size="sm"

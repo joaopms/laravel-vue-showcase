@@ -21,7 +21,7 @@ class AppointmentFactory extends Factory
     {
         return [
             'symptoms' => fake()->text(),
-            'preferred_date' => fake()->dateTimeThisMonth('+15 days'),
+            'preferred_date' => fake()->dateTimeThisMonth('+15 days')->format('Y-m-d'),
             'preferred_time' => fake()->randomElement(TimeOfDay::class),
             'animal_age_months' => fake()->randomNumber(2),
             'animal_id' => Animal::factory(),

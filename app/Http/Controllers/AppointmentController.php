@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ListAppointmentsRequest;
+use App\Http\Resources\AppointmentCollection;
 use App\Http\Resources\AppointmentResource;
 use App\Models\Animal;
 use App\Models\Appointment;
@@ -33,7 +34,7 @@ class AppointmentController extends Controller
         $animalTypes = Animal::types(approved: false);
 
         return Inertia::render('dashboard/appointments/Index', [
-            'appointments' => AppointmentResource::collection($appointments),
+            'appointments' => new AppointmentCollection($appointments)->listing(),
             'animalTypes' => $animalTypes,
         ]);
     }
@@ -43,7 +44,7 @@ class AppointmentController extends Controller
         $appointment = $appointment->load(['animal', 'animal.client']);
 
         return Inertia::render('dashboard/appointments/Appointment', [
-            'appointment' => $appointment,
+            'appointment' => new AppointmentResource($appointment)->showing(),
             'animalTypes' => Animal::types(approved: false),
             'timesOfDay' => TimeOfDay::selectable(),
         ]);

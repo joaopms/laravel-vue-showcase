@@ -4,26 +4,42 @@ namespace App\Http\Resources;
 
 use App\Models\Appointment;
 use App\Models\User;
+use App\ResourceConditions;
+use App\TimeOfDay;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin Appointment */
+/** @mixin Appointment
+ * @property bool $listing
+ * @property bool $showing
+ */
 class AppointmentResource extends JsonResource
 {
+    use ResourceConditions;
+
+    protected array $conditions = ['listing', 'showing'];
+
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'preferred_date' => $this->preferred_date_formatted,
-            'preferred_time' => $this->preferred_time_formatted,
-            'symptoms' => $this->symptoms,
+            'appointment' => [
+                'id' => $this->when($this->listing, $this->id),
+                'preferred_date_formatted' => $this->when($this->listing, $this->preferred_date_formatted),
+                'preferred_time_formatted' => $this->when($this->listing, $this->preferred_time_formatted),
+                'preferred_date' => $this->when($this->showing, $this->preferred_date->toDateString()),
+                'preferred_time' => $this->when($this->showing, TimeOfDay::toInputData($this->preferred_time)),
+                'symptoms' => $this->symptoms,
+            ],
             'animal' => [
                 'name' => $this->animal->name,
                 'type' => $this->animal->type,
-                'age' => $this->animal_age_formatted,
+                'age_human' => $this->animal_age->human(),
+                'age_years' => $this->animal_age->years(),
+                'age_months' => $this->animal_age->months(),
             ],
             'client' => [
                 'name' => $this->animal->client->name,
+                'email' => $this->when($this->showing, $this->animal->client->email),
             ],
             'medic' => $this->whenLoaded('medic', fn (User $medic) => [
                 'name' => $medic->name,
