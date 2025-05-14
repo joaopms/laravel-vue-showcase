@@ -201,7 +201,7 @@ function createAnimalType(item: string) {
         </div>
 
         <!-- Extra fields -->
-        <p class="mb-2 pt-0 text-2xl/12" v-if="extraSectionTitle">{{ extraSectionTitle }}</p>
+        <p class="mb-2 pt-0 text-2xl/12" v-if="extraSectionTitle && $slots.extra">{{ extraSectionTitle }}</p>
         <div class="flex flex-col gap-4 md:flex-row" v-if="$slots.extra">
             <slot name="extra" v-bind="{ form }"></slot>
         </div>

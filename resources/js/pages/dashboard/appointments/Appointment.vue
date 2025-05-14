@@ -8,6 +8,7 @@ import { ref } from 'vue';
 const page = usePage();
 const medics: InputMenuItem = page.props.medics.data.map((medic: { name: string; id: number }) => ({ label: medic.name, value: medic.id }));
 const routeParams = { appointment: route().routeParams.appointment };
+const data = page.props.appointment.data;
 
 const deleting = ref(false);
 
@@ -35,16 +36,16 @@ function deleteAppointment() {
                 :url="route('dashboard.appointments.update', routeParams)"
                 :animal-types="$page.props.animalTypes"
                 :times-of-day="$page.props.timesOfDay"
-                :initial-data="$page.props.appointment.data"
+                :initial-data="data"
                 client-section-title="Client"
                 animal-section-title="Animal"
                 appointment-section-title="Appointment"
                 extra-section-title="Employee only"
                 submit-text="Edit appointment"
             >
-                <template #extra="{ form }">
+                <template #extra="{ form }" v-if="data._can.delete && data._can.assign">
                     <!-- Medic -->
-                    <UFormField label="Type" name="medic.id" class="w-full sm:w-1/2">
+                    <UFormField v-if="data._can_assign" label="Type" name="medic.id" class="w-full sm:w-1/2">
                         <div class="flex items-center gap-2">
                             <UInputMenu
                                 v-model="form.medic.id"
@@ -70,7 +71,7 @@ function deleteAppointment() {
                         </div>
                     </UFormField>
 
-                    <UFormField label="Actions" class="w-full sm:w-1/2">
+                    <UFormField label="Actions" class="w-full sm:w-1/2" v-if="data._can.delete">
                         <UButton variant="outline" color="error" @click.prevent="deleteAppointment" :loading="deleting">Delete appointment</UButton>
                     </UFormField>
                 </template>

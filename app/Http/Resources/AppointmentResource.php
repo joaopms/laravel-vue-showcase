@@ -44,6 +44,13 @@ class AppointmentResource extends JsonResource
                 'id' => $this->when($this->showing, $this->medic?->id),
                 'name' => $this->when($this->listing, $this->medic?->name),
             ],
+
+            // User permissions
+            '_can' => [
+                'update' => $request->user()->can('update', $this->resource),
+                'delete' => $request->user()->can('delete', $this->resource),
+                'assign' => $request->user()->can('assign', $this->resource),
+            ],
         ];
     }
 }

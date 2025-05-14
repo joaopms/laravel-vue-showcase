@@ -167,6 +167,7 @@ function updateData() {
                     </template>
                     <template #actions-cell="{ row }">
                         <UButton
+                            v-if="row.original._can.update"
                             title="Edit appointment"
                             :href="route('dashboard.appointments.show', { appointment: row.original.appointment.id })"
                             icon="lucide-edit"

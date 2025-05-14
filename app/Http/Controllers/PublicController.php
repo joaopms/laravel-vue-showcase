@@ -28,9 +28,10 @@ class PublicController extends Controller
     {
         DB::transaction(function () use ($appSched) {
             // Create or update the client name if the email matches an existing one
+            $data = $appSched->safe();
             $client = Client::updateOrCreate(
-                ['email' => $appSched['client.email']],
-                $appSched->safe()['client']
+                ['email' => $data['client.email']],
+                $data['client']
             );
 
             // Get or create the animal

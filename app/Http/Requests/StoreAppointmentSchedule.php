@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Helpers\AgeParser;
+use App\Models\Appointment;
 use App\TimeOfDay;
 use App\UserType;
 use Illuminate\Foundation\Http\FormRequest;
@@ -38,7 +39,7 @@ class StoreAppointmentSchedule extends FormRequest
             'appointment.symptoms' => ['required', 'string', 'min:10', 'max:255'],
 
             // Employee only fields
-            'medic.id' => auth()->check()
+            'medic.id' => auth()->check() && $this->user()->can('assign', Appointment::class)
                 ? ['nullable', Rule::exists('users', 'id')->where('type', UserType::Medic)]
                 : [],
         ];

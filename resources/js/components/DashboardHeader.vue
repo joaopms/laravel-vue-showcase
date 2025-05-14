@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { appName } from '@/lib/consts';
 import { type SharedData } from '@/types';
-import { usePage } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import type { NavigationMenuItem } from '@nuxt/ui';
 import { computed } from 'vue';
 
@@ -36,7 +36,9 @@ const items = <NavigationMenuItem[][]>[
         {
             label: 'Logout',
             icon: 'i-lucide-log-out',
-            href: route('logout'),
+            onSelect() {
+                router.post(route('logout'));
+            },
         },
     ],
 ];

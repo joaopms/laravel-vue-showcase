@@ -30,4 +30,12 @@ class AppointmentPolicy
     {
         return $user->isReceptionist();
     }
+
+    /**
+     * Determine whether the user can assign the appointment to a medic
+     */
+    public function assign(User $user): bool
+    {
+        return $user->isReceptionist();
+    }
 }

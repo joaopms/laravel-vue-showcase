@@ -64,9 +64,10 @@ class AppointmentController extends Controller
     {
         DB::transaction(function () use ($request, $appointment) {
             // Update the client
+            $data = $request->safe();
             $client = Client::updateOrCreate(
-                ['email' => $request['client.email']],
-                $request->safe()['client'],
+                ['email' => $data['client.email']],
+                $data['client'],
             );
 
             // Update the animal
@@ -77,10 +78,14 @@ class AppointmentController extends Controller
             ]);
 
             // Update the appointment
+            $canAssign = $request->user()->can('assign', Appointment::class);
+            $assignData = $canAssign ? [
+                'medic_id' => $data['medic.id'],
+                'receptionist_id' => $request->user()->id,
+            ] : [];
             $appointment->update([
                 ...$request->getAppointmentData(),
-                'medic_id' => $request['medic.id'],
-                'receptionist_id' => $request->user()->id,
+                ...$assignData,
             ]);
         });
 
