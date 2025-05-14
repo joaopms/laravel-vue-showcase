@@ -105,7 +105,7 @@ function updateData() {
         <UCard>
             <div class="space-y-4">
                 <!-- Filters -->
-                <div class="flex items-center gap-3">
+                <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
                     <!-- Date filter -->
                     <UPopover>
                         <UButton variant="soft" icon="i-lucide-calendar" size="sm">
