@@ -14,6 +14,7 @@ use App\Models\User;
 use App\TimeOfDay;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Throwable;
@@ -90,8 +91,31 @@ class AppointmentController extends Controller
         return to_route('dashboard.appointments.index');
     }
 
-    public function destroy(Appointment $appointment)
+    /**
+     * @throws Throwable
+     */
+    public function destroy(Request $request, Appointment $appointment)
     {
-        //
+        DB::transaction(function () use ($appointment) {
+            $animal = $appointment->animal;
+            $client = $animal->client;
+
+            // Delete the appointment
+            $appointment->delete();
+
+            if ($animal->appointments()->count() === 0) {
+                // Delete the animal if it has no appointments
+                $animal->delete();
+
+                if ($client->animals()->count() === 0) {
+                    // Delete the client if it has no animals
+                    $client->delete();
+                }
+            }
+        });
+
+        $request->session()->flash('success', 'Appointment was successfully deleted');
+
+        return to_route('dashboard.appointments.index');
     }
 }

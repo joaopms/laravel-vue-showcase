@@ -9,16 +9,14 @@ const page = usePage();
 const toast = useToast();
 
 // Notifications (toasts)
-page.props.flash.success
-    ? (() => {
-          toast.add({
-              title: 'Success!',
-              description: page.props.flash.success,
-              color: 'success',
-              icon: 'lucide-smile',
-          });
-      })()
-    : null;
+if (page.props.flash.success) {
+    toast.add({
+        title: 'Success!',
+        description: page.props.flash.success,
+        color: 'success',
+        icon: 'lucide-smile',
+    });
+}
 </script>
 
 <template>

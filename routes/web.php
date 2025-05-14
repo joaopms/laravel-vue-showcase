@@ -28,6 +28,8 @@ Route::name('dashboard')
         Route::put('/appointments/{appointment}', [AppointmentController::class, 'update'])
             ->name('.appointments.update')
             ->middleware([HandlePrecognitiveRequests::class]);
+        Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy'])
+            ->name('.appointments.destroy');
     });
 
 require __DIR__.'/settings.php';
